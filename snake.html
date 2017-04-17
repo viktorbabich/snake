@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="test22">
+	<title>snake</title>
+	<style>
+		#canvas {
+			background: grey;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<div id="outer"></div>
+	<form id='settings'>
+		<p>Ширина поля</p><input type="number" id='amountX' value='21'> 
+		<p>Высота поля</p><input type="number" id='amountY' value='7'> 
+	</form>
+	<script>
+
+	var canvas, ctx, SIDE, amount, gridX, gridY, snake, newBlock, count, speed;
+	canvas = document.getElementById('canvas');
+	ctx = canvas.getContext('2d');
+	SIDE = 50;
+	gridX = [];
+	gridY = [];
+	newBlock = {};
+	count = 0;
+	speed = 500;
+
+		app = { 
+			createGrid: function(amount, grid) {
+				var result = 0;
+				for(var i = 0; i<amount; i++) {
+					grid.push(result)
+					result += SIDE;
+				};
+			},
+			move: function(snake) {			
+				var check;
+				check = false;
+				snake.forEach(function(block, index) {
+					ctx.clearRect(block.x, block.y, SIDE, SIDE);
+					block.x += block.vectorX;
+					block.y += block.vectorY;
+				});
+				if((snake[0].y == -SIDE) 		 || 
+				   (snake[0].x == -SIDE) 		 || 
+				   (snake[0].y == canvas.height) || 
+			   	   (snake[0].x == canvas.width)) {check = true};
+				for(var i = snake.length-1; i>=1; i--) {
+					snake[i].vectorX = snake[i-1].vectorX;
+					snake[i].vectorY = snake[i-1].vectorY;
+				};
+				if(check === true) {app.gameOver(); return};
+				app.paintSnake();
+				app.pushBlock();
+				window.setTimeout(app.move, 1000-speed, snake);
+			},
+			paintSnake: function() {
+				snake.forEach(function(block) {
+					ctx.fillStyle = 'green';
+					ctx.fillRect(block.x, block.y, SIDE, SIDE);
+				});
+			},
+			pushBlock: function() { 
+				var lastBlock  = snake[snake.length-1];
+				snake.forEach(function(block) {
+					if((newBlock.x == snake[0].x) &&
+					(newBlock.y == snake[0].y)) {
+						newBlock.x = lastBlock.x - lastBlock.vectorX;
+						newBlock.y = lastBlock.y - lastBlock.vectorY;
+						newBlock.vectorX = lastBlock.vectorX;
+						newBlock.vectorY = lastBlock.vectorY;
+						snake.push(newBlock);
+						count++;
+						if(count%3 == 0) {speed += 30};
+						newBlock = {};
+						app.addBlock();
+					}
+				});
+			},
+			addBlock: function() {
+				var check;
+				check = false;
+				var randX = Math.round(-0.5 + Math.random() * (amountX));
+				var randY = Math.round(-0.5 + Math.random() * (amountY));
+				snake.forEach(function(block) {
+					if((gridX[randX] == block.x) && (gridY[randY] == block.y)) {
+						check = true;
+					}
+				});
+				if(check === false) {
+					newBlock.x = gridX[randX];
+					newBlock.y = gridY[randY];
+					ctx.fillStyle = 'red';
+					ctx.fillRect(newBlock.x, newBlock.y, SIDE, SIDE);
+				} else if(check===true) {app.addBlock()}
+			},
+			start: function() {
+				amountX = document.getElementById('amountX').value;
+				amountY = document.getElementById('amountY').value;
+				canvas.width  = SIDE*amountX;
+				canvas.height = SIDE*amountY;
+				snake 	 = [];
+				snake[0] = {x: 100, y: 50, vectorX: 0, vectorY: 50};
+				snake[1] = {x: 100, y: 0, vectorX: 0, vectorY: 50};
+				snake[2] = {x: 100, y: -50, vectorX: 0, vectorY: 50};
+				app.createGrid(amountX, gridX);
+				app.createGrid(amountY, gridY);
+				app.addBlock();
+				app.move(snake);
+			},
+			gameOver: function() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.fillStyle = "red";
+				ctx.fillRect(50, 50, SIDE, SIDE);
+				ctx.fillRect(50, 100, SIDE, SIDE);
+				ctx.fillRect(50, 150, SIDE, SIDE);
+				ctx.fillRect(50, 200, SIDE, SIDE);
+				ctx.fillRect(50, 250, SIDE, SIDE);
+				ctx.fillRect(100, 50, SIDE, SIDE);
+				ctx.fillRect(100, 150, SIDE, SIDE);
+				ctx.fillRect(150, 50, SIDE, SIDE);
+				ctx.fillRect(150, 100, SIDE, SIDE);
+				ctx.fillRect(150, 150, SIDE, SIDE);
+				ctx.fillRect(250, 100, SIDE, SIDE);
+				ctx.fillRect(250, 150, SIDE, SIDE);
+				ctx.fillRect(250, 200, SIDE, SIDE);
+				ctx.fillRect(250, 250, SIDE, SIDE);
+				ctx.fillRect(300, 50, SIDE, SIDE);
+				ctx.fillRect(300, 150, SIDE, SIDE);
+				ctx.fillRect(350, 100, SIDE, SIDE);
+				ctx.fillRect(350, 150, SIDE, SIDE);
+				ctx.fillRect(350, 200, SIDE, SIDE);
+				ctx.fillRect(350, 250, SIDE, SIDE);
+				ctx.fillRect(450, 50, SIDE, SIDE);
+				ctx.fillRect(450, 100, SIDE, SIDE);
+				ctx.fillRect(450, 150, SIDE, SIDE);
+				ctx.fillRect(450, 250, SIDE, SIDE);
+				ctx.fillRect(500, 50, SIDE, SIDE);
+				ctx.fillRect(500, 150, SIDE, SIDE);
+				ctx.fillRect(500, 250, SIDE, SIDE);
+				ctx.fillRect(550, 50, SIDE, SIDE);
+				ctx.fillRect(550, 150, SIDE, SIDE);
+				ctx.fillRect(550, 200, SIDE, SIDE);
+				ctx.fillRect(550, 250, SIDE, SIDE);
+				ctx.fillRect(650, 50, SIDE, SIDE);
+				ctx.fillRect(650, 100, SIDE, SIDE);
+				ctx.fillRect(650, 150, SIDE, SIDE);
+				ctx.fillRect(650, 200, SIDE, SIDE);
+				ctx.fillRect(650, 250, SIDE, SIDE);
+				ctx.fillRect(700, 50, SIDE, SIDE);
+				ctx.fillRect(700, 250, SIDE, SIDE);
+				ctx.fillRect(750, 50, SIDE, SIDE);
+				ctx.fillRect(750, 100, SIDE, SIDE);
+				ctx.fillRect(750, 150, SIDE, SIDE);
+				ctx.fillRect(750, 200, SIDE, SIDE);
+				ctx.fillRect(750, 250, SIDE, SIDE);
+				ctx.fillRect(850, 50, SIDE, SIDE);
+				ctx.fillRect(850, 100, SIDE, SIDE);
+				ctx.fillRect(850, 150, SIDE, SIDE);
+				ctx.fillRect(850, 250, SIDE, SIDE);
+				ctx.fillRect(900, 50, SIDE, SIDE);
+				ctx.fillRect(900, 150, SIDE, SIDE);
+				ctx.fillRect(900, 250, SIDE, SIDE);
+				ctx.fillRect(950, 50, SIDE, SIDE);
+				ctx.fillRect(950, 150, SIDE, SIDE);
+				ctx.fillRect(950, 200, SIDE, SIDE);
+				ctx.fillRect(950, 250, SIDE, SIDE);
+			}
+		}
+		window.addEventListener('keydown', function(event) {
+			if(event.keyCode == 32) {
+				app.start();
+			}
+		});
+		window.addEventListener('keydown', function(event) {
+			if(event.keyCode == 39) {
+				if(snake[0].vectorX == -50) {return} 
+				else {
+					snake[0].vectorX = 50;
+					snake[0].vectorY = 0;
+				};
+			}
+			else if(event.keyCode == 37) {
+				if(snake[0].vectorX == 50) {return} 
+				else {
+					snake[0].vectorX = -50;
+					snake[0].vectorY = 0;
+				};
+			}
+			else if(event.keyCode == 38) {
+				if(snake[0].vectorY == 50) {return}
+				else {
+					snake[0].vectorX = 0;
+					snake[0].vectorY = -50;
+				};
+			}
+			else if(event.keyCode == 40) {
+				if(snake[0].vectorY == -50) {return}
+				else {
+					snake[0].vectorX = 0;
+					snake[0].vectorY = 50;
+				};
+			};
+		});			
+	</script>
+</body>
+</html>
+
+
+
+
+
+
